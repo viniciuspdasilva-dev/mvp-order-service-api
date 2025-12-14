@@ -1,8 +1,8 @@
 package io.git.mvp.mvp_order_service_api.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -11,25 +11,31 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Entity
+@Table(name = "product")
 @Getter
 @Setter
-@Entity
-@Table(name = "order", indexes = {
-        @Index(name = "idx_order_userid", columnList = "userId"),
-        @Index(name = "idx_order_productid", columnList = "productId"),
-        @Index(name = "idx_order_status", columnList = "status")
-})
+@ToString
+@RequiredArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(nullable = false)
-    private Long id;
+public class Product {
 
-    private Long userId;
-    private Long productId;
-    private Integer quantity;
-    private String status;
+    @Id
+    @Schema(description = "Product ID", example = "1")
+    private Integer id;
+    @Schema(description = "Product Title", example = "men's clothing")
+    @Column(length = 500)
+    private String title;
+    @Schema(description = "Product Price", example = "100.00")
+    private float price;
+    @Schema(description = "Product Description", example = "This is a men's clothing")
+    @Column(length = 2000)
+    private String description;
+    @Schema(description = "Product Category", example = "clothing")
+    private String category;
+    @Schema(description = "Product Image URL", example = "https://example.com/image.jpg")
+    @Column(length = 1000)
+    private String image;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -45,8 +51,8 @@ public class Order {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Order order = (Order) o;
-        return getId() != null && Objects.equals(getId(), order.getId());
+        Product product = (Product) o;
+        return getId() != null && Objects.equals(getId(), product.getId());
     }
 
     @Override
