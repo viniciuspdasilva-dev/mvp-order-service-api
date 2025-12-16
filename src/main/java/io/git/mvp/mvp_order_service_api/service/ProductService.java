@@ -3,7 +3,7 @@ package io.git.mvp.mvp_order_service_api.service;
 
 import io.git.mvp.mvp_order_service_api.client.FakeStoreClient;
 import io.git.mvp.mvp_order_service_api.model.Product;
-import io.git.mvp.mvp_order_service_api.model.ProductRepository;
+import io.git.mvp.mvp_order_service_api.repository.ProductRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
@@ -41,7 +41,6 @@ public class ProductService {
     public Optional<Product> getProductById(Integer id){
         return productRepository.findById(id);
     }
-
 
     private void saveAll(List<Product> products) {
         if (products.isEmpty()) {

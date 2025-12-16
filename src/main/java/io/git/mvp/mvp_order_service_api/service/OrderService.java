@@ -4,6 +4,7 @@ import io.git.mvp.mvp_order_service_api.client.FakeStoreClient;
 import io.git.mvp.mvp_order_service_api.kafka.OrderProducer;
 import io.git.mvp.mvp_order_service_api.model.Order;
 import io.git.mvp.mvp_order_service_api.repository.OrderRepository;
+import org.hibernate.HibernateException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -43,7 +44,23 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
+    public List<Order> findAllByStatus(String status){
+        return orderRepository.findByStatus(status);
+    }
+
     public Order findById(Long orderId){
         return orderRepository.findById(orderId).orElseThrow();
+    }
+
+    public void delete(Long orderId){
+        try {
+            Order order = findById(orderId);
+            order.setStatus("CANCELLED");
+            order.setUpdatedAt(LocalDateTime.now());
+            orderRepository.save(order);
+            orderProducer.cancel_order(orderId);
+        } catch (HibernateException e) {
+            throw new RuntimeException("Erro ao remover pedido");
+        }
     }
 }
