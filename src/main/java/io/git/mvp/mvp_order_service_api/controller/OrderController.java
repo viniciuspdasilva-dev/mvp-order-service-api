@@ -45,11 +45,11 @@ public class OrderController {
                     )
             }
     )
-    public List<Order> getAll(@RequestParam(required = false) String status) {
+    public ResponseEntity<List<Order>> getAll(@RequestParam(required = false) String status) {
         if (status != null) {
-            return service.findAllByStatus(status);
+            return ResponseEntity.ok(service.findAllByStatus(status));
         }
-        return service.findAll();
+        return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("/{id}")
@@ -66,8 +66,12 @@ public class OrderController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = RuntimeException.class)))
     })
-    public Order getById(@PathVariable Long id) {
-        return service.findById(id);
+    public ResponseEntity<Order> getById(@PathVariable Long id) {
+        Order order = service.findById(id);
+        if (order == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(order);
     }
 
     @PostMapping
@@ -94,12 +98,16 @@ public class OrderController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Create a new purchase order",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Order.class))),
+                            schema = @Schema(implementation = ResponseEntity.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = RuntimeException.class)))
     })
-    public Order updateStatus(@PathVariable Long id, @RequestParam String status) {
-        return service.updateStatus(id, status);
+    public ResponseEntity<Order> updateStatus(@PathVariable Long id, @RequestParam String status) {
+        Order order = service.updateStatus(id, status);
+        if (order == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(order);
     }
 
     @DeleteMapping("/{id}")

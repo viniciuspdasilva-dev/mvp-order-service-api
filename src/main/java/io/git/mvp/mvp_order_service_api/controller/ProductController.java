@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/products")
-@Tag(name = "Products", description = "Gerenciamento dos produtos disponiveis para compra")
+@Tag(name = "Products", description = "Managing products available for purchase.")
 public class ProductController {
 
     private final ProductService service;
@@ -36,7 +36,7 @@ public class ProductController {
             value = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Lista de produtos",
+                            description = "List of products available for purchase.",
                             content = @io.swagger.v3.oas.annotations.media.Content(
                                     mediaType = "application/json",
                                     array = @ArraySchema(schema = @Schema(implementation = Product.class))
